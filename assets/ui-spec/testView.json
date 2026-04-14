@@ -1,0 +1,232 @@
+{
+  "version": 1,
+  "generator": {
+    "name": "TestMcp/tools/psd-parse",
+    "version": "1.0.0"
+  },
+  "source": {
+    "psdPath": "f:\\Work\\CocosProject\\TestMcp\\assets\\Psd\\testView.psd",
+    "fileName": "testView.psd"
+  },
+  "psd": {
+    "width": 700,
+    "height": 1525,
+    "channels": 3,
+    "bitsPerChannel": 8,
+    "colorMode": 3
+  },
+  "options": {
+    "includeImageData": false,
+    "origin": "center"
+  },
+  "layers": [
+    {
+      "id": "Parena_BG_GameScene",
+      "kind": "pixel",
+      "name": "Parena_BG_GameScene",
+      "path": "Parena_BG_GameScene",
+      "parentPath": null,
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 0,
+        "top": -99,
+        "width": 700,
+        "height": 1725,
+        "right": 700,
+        "bottom": 1626
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": -350,
+          "y": -863.5,
+          "z": 0
+        },
+        "size": {
+          "width": 700,
+          "height": 1725
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "GrpBtn",
+      "kind": "group",
+      "name": "GrpBtn",
+      "path": "GrpBtn",
+      "parentPath": null,
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 0,
+        "top": 0,
+        "width": 0,
+        "height": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": -350,
+          "y": 762.5,
+          "z": 0
+        },
+        "size": {
+          "width": 0,
+          "height": 0
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "GrpBtn_common_btn_red",
+      "kind": "pixel",
+      "name": "common_btn_red",
+      "path": "GrpBtn/common_btn_red",
+      "parentPath": "GrpBtn",
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 223,
+        "top": 714,
+        "width": 254,
+        "height": 97,
+        "right": 477,
+        "bottom": 811
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": -127,
+          "y": -48.5,
+          "z": 0
+        },
+        "size": {
+          "width": 254,
+          "height": 97
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "GrpBtn_button",
+      "kind": "text",
+      "name": "button",
+      "path": "GrpBtn/button",
+      "parentPath": "GrpBtn",
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 278,
+        "top": 739,
+        "width": 144,
+        "height": 39,
+        "right": 422,
+        "bottom": 778
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": -72,
+          "y": -15.5,
+          "z": 0
+        },
+        "size": {
+          "width": 144,
+          "height": 39
+        }
+      },
+      "text": {
+        "content": "button",
+        "font": {
+          "name": "AdobeInvisFont",
+          "size": 48.006
+        },
+        "raw": {
+          "style": {
+            "font": {
+              "name": "AdobeInvisFont",
+              "script": 0,
+              "type": 0,
+              "synthetic": 0
+            },
+            "fontSize": 48.006,
+            "kerning": 0
+          },
+          "styleRuns": [
+            {
+              "length": 1,
+              "style": {
+                "autoKerning": false
+              }
+            },
+            {
+              "length": 5,
+              "style": {
+                "autoKerning": true
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "justification": "center",
+            "firstLineIndent": 0,
+            "startIndent": 0,
+            "endIndent": 0,
+            "spaceBefore": 0,
+            "spaceAfter": 0,
+            "autoHyphenate": false,
+            "hyphenatedWordSize": 6,
+            "preHyphen": 2,
+            "postHyphen": 2,
+            "consecutiveHyphens": 8,
+            "zone": 36,
+            "wordSpacing": [
+              0.8,
+              1,
+              1.33
+            ],
+            "letterSpacing": [
+              0,
+              0,
+              0
+            ],
+            "glyphSpacing": [
+              1,
+              1,
+              1
+            ],
+            "autoLeading": 1.75,
+            "leadingType": 1,
+            "hanging": false,
+            "burasagari": false,
+            "kinsokuOrder": 0,
+            "everyLineComposer": false
+          },
+          "warp": {
+            "style": "none",
+            "value": 0,
+            "perspective": 0,
+            "perspectiveOther": 0,
+            "rotate": "horizontal"
+          },
+          "antiAlias": "sharp"
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    }
+  ],
+  "warnings": [
+    "图层 \"Parena_BG_GameScene\" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。",
+    "图层 \"GrpBtn/common_btn_red\" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。"
+  ]
+}

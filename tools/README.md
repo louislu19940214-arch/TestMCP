@@ -5,7 +5,7 @@
 ## 前置条件
 
 1. **Cocos Creator 3.8+** 已打开项目
-2. **cocos-mcp-server** 插件已安装并启动（端口 3000）
+2. **cocos-mcp-server** 插件已安装并启动（默认端口 **8585**；如不同请设置环境变量 `COCOS_MCP_URL`）
 3. **Node.js** 环境
 
 ## 安装依赖
@@ -35,6 +35,31 @@ npm run parse
 ```
 
 这会生成 `prefab-calls.json`，包含所有 MCP 工具调用。
+
+### 方式三：从 PSD 解析为 JSON（中间产物）
+
+用于把 PSD 先解析成稳定的 `ui-spec/*.json`（可选生成同名 `*.md`），后续再接入你们的 **JSON → MD → MCP** 流程。
+
+```bash
+npm run psd:parse -- path\\to\\Your.psd --out ..\\assets\\ui-spec\\Your.json --md --origin center
+```
+
+说明：
+
+- 默认会 **跳过图层像素数据**（更快）。如果你后续要做“导出切图/贴图还原”，请加 `--include-image-data` 重新解析。
+- 默认输出目录为 `../assets/ui-spec/<psd文件名>.json`（相对 `tools/` 目录）。
+
+### 方式四：从 UI Spec JSON 经 MCP 生成 Prefab
+
+1. 确保 Cocos Creator 已打开本项目，且 **cocos-mcp-server 已启动**（默认端口 8585，或设置 `COCOS_MCP_URL`）。
+2. 贴图放在 `assets/Texture/` 下（脚本默认从 `ui-spec` 文件旁的 `../Texture` 读取），图层名尽量与 `xxx.png` / `xxx.jpg` 文件名对应；**Sprite 引用使用各图片 `.meta` 里 `sprite-frame` 子资源的 uuid**（形如 `xxxxxxxx@f9941`），不要传 `db://...png` 给 MCP，否则预制体里会写成非法 `__uuid__` 导致紫图。
+3. 执行：
+
+```bash
+npm run ui-spec:prefab -- ..\\assets\\ui-spec\\testView.json --prefab db://assets/prefabs/testView_fromPsd.prefab
+```
+
+可选：在 `assets/ui-spec/` 下放置与 spec **同名**的 **`testView.rules.json`**（或用 `--rules`），按图层名正则追加组件（如 `btn` → `cc.Button`）。说明见 `assets/ui-spec/RULES.md`。
 
 ## 定义格式
 

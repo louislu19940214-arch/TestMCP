@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "layerNameRules": [
+    {
+      "comment": "整组可点：挂在 PSD 组图层上（如 GrpBtn），不要对子 Sprite 再挂 Button",
+      "regex": "btn",
+      "flags": "i",
+      "when": "group",
+      "addComponents": ["cc.Button"],
+      "setProperties": [
+        {
+          "componentType": "cc.Button",
+          "property": "transition",
+          "propertyType": "number",
+          "value": 2
+        }
+      ]
+    }
+  ]
+}

@@ -3,7 +3,10 @@
  * 直接通过 MCP HTTP 接口调用 Cocos Creator
  */
 
-const MCP_BASE_URL = 'http://127.0.0.1:3000/mcp';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const MCP_BASE_URL = process.env.COCOS_MCP_URL ?? 'http://127.0.0.1:8585/mcp';
 
 interface NodeCreateOptions {
     name: string;
@@ -379,7 +382,6 @@ export async function generateShopItem() {
 // 导出定义用于测试
 export { shopItemDefinition, SimplePrefabGenerator };
 
-// 主函数执行
 async function main() {
     const generator = new SimplePrefabGenerator();
 
@@ -391,5 +393,8 @@ async function main() {
     }
 }
 
-// 运行主函数
-main().catch(console.error);
+const isDirectRun =
+    process.argv[1] && path.resolve(fileURLToPath(import.meta.url)) === path.resolve(process.argv[1]);
+if (isDirectRun) {
+    main().catch(console.error);
+}

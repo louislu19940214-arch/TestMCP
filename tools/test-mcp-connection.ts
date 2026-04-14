@@ -3,7 +3,7 @@
  * 验证 cocos-mcp-server 是否可用
  */
 
-const MCP_BASE_URL = 'http://127.0.0.1:3000/mcp';
+const MCP_BASE_URL = process.env.COCOS_MCP_URL ?? 'http://127.0.0.1:8585/mcp';
 
 /**
  * 调用 MCP 工具
