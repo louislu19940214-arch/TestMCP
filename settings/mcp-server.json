@@ -1,0 +1,6 @@
+{
+  "port": 8585,
+  "autoStart": false,
+  "enableDebugLog": false,
+  "maxConnections": 10
+}

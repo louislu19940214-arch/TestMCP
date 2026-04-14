@@ -1,0 +1,8 @@
+{
+    "mcpServers": {
+        "cocos-creator": {
+            "type": "http",
+            "url": "http://localhost:8585/mcp"
+        }
+    }
+}

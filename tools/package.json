@@ -1,0 +1,21 @@
+{
+  "name": "cocos-prefab-generator",
+  "version": "1.0.0",
+  "description": "从 Markdown 定义生成 Cocos Creator 预制体",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx mock-mcp-server.ts",
+    "generate": "tsx prefab-generator-v2.ts",
+    "parse": "tsx prefab-generator.ts",
+    "test": "tsx test-mcp-connection.ts",
+    "full": "tsx prefab-generator-v2.ts"
+  },
+  "dependencies": {
+    "ag-psd": "^30.1.1",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0"
+  }
+}

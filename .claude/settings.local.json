@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(claude mcp:*)",
+      "Bash(npx -y mcp-client call http://127.0.0.1:8585/mcp node_lifecycle)",
+      "Bash(curl:*)",
+      "Bash(npx tsx:*)",
+      "Bash(python -c \"import sys, json; tools = json.load\\(sys.stdin\\)['result']['tools']; print\\('\\\\n'.join\\([f\\\\\"{t['name']}\\\\\" for t in tools if 'node' in t['name'].lower\\(\\) or 'position' in t['name'].lower\\(\\) or 'transform' in t['name'].lower\\(\\)]\\)\\)\")",
+      "Bash(python -c \"import sys, json; tools = json.load\\(sys.stdin\\)['result']['tools']; print\\('\\\\n'.join\\([f\\\\\"{t['name']}\\\\\" for t in tools if 'component' in t['name'].lower\\(\\)]\\)\\)\")",
+      "Bash(python -c \"import sys, json; tools = json.load\\(sys.stdin\\)['result']['tools']; print\\('\\\\n'.join\\([f\\\\\"{t['name']}\\\\\" for t in tools if 'prefab' in t['name'].lower\\(\\)]\\)\\)\")"
+    ]
+  }
+}
