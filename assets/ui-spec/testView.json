@@ -16,7 +16,7 @@
     "colorMode": 3
   },
   "options": {
-    "includeImageData": false,
+    "includeImageData": true,
     "origin": "center"
   },
   "layers": [
@@ -49,7 +49,7 @@
         }
       },
       "flags": {
-        "hasImageData": false
+        "hasImageData": true
       }
     },
     {
@@ -113,7 +113,7 @@
         }
       },
       "flags": {
-        "hasImageData": false
+        "hasImageData": true
       }
     },
     {
@@ -147,8 +147,18 @@
       "text": {
         "content": "button",
         "font": {
-          "name": "AdobeInvisFont",
           "size": 48.006
+        },
+        "color": {
+          "r": 43,
+          "g": 84,
+          "b": 94,
+          "a": 255
+        },
+        "fillColorRaw": {
+          "r": 43.12815,
+          "g": 83.8287,
+          "b": 94.00065000000001
         },
         "raw": {
           "style": {
@@ -159,7 +169,12 @@
               "synthetic": 0
             },
             "fontSize": 48.006,
-            "kerning": 0
+            "kerning": 0,
+            "fillColor": {
+              "r": 43.12815,
+              "g": 83.8287,
+              "b": 94.00065000000001
+            }
           },
           "styleRuns": [
             {
@@ -221,12 +236,9 @@
         }
       },
       "flags": {
-        "hasImageData": false
+        "hasImageData": true
       }
     }
   ],
-  "warnings": [
-    "图层 \"Parena_BG_GameScene\" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。",
-    "图层 \"GrpBtn/common_btn_red\" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。"
-  ]
+  "warnings": []
 }

@@ -1,0 +1,14 @@
+{
+  "ver": "1.1.50",
+  "importer": "prefab",
+  "imported": true,
+  "uuid": "fb7ee486-3f9f-4c15-8341-d1a75c62dfa3",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {
+    "syncNodeName": "UITestView_fromPsd",
+    "hasIcon": false
+  }
+}

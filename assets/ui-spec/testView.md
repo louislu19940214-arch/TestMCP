@@ -3,11 +3,7 @@
 - **来源 PSD**：`f:\Work\CocosProject\TestMcp\assets\Psd\testView.psd`
 - **画布尺寸**：700 x 1525
 - **坐标原点策略**：`center`（见 JSON 内 cocos.position 说明）
-- **包含图层像素数据**：`否`
-
-## ⚠️ 警告
-- 图层 "Parena_BG_GameScene" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。
-- 图层 "GrpBtn/common_btn_red" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。
+- **包含图层像素数据**：`是`
 
 ## 图层清单（扁平化）
 

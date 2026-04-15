@@ -4,8 +4,14 @@
 
 ## 规则文件放哪里
 
+- 全局基础规则：`assets/ui-spec/base.rules.json`（若存在会自动加载，作为所有页面的默认规则）
 - 与 UI Spec 同名、同目录：例如 `testView.json` 旁放置 **`testView.rules.json`**，会自动加载。
 - 或命令行指定：`npm run ui-spec:prefab -- path/to/spec.json --rules path/to/custom.rules.json`
+
+## 规则加载优先级（重要）
+
+- **默认行为（不传 `--rules`）**：先加载 `base.rules.json`，再加载页面同名的 `<spec>.rules.json`，两者的 `layerNameRules` **按顺序拼接执行**（后面的规则可以“更具体地命中”来覆盖/补充效果）。
+- **显式指定（传 `--rules`）**：只加载你指定的那一个规则文件（完全接管），不会再自动加载 base/page。
 
 ## JSON 格式（`version`: 1）
 

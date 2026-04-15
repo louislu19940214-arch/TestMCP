@@ -1,0 +1,435 @@
+{
+  "version": 1,
+  "generator": {
+    "name": "TestMcp/tools/psd-parse",
+    "version": "1.0.0"
+  },
+  "source": {
+    "psdPath": "F:\\Work\\CocosProject\\TestMcp\\assets\\testModule\\Psd\\UITestView.psd",
+    "fileName": "UITestView.psd"
+  },
+  "psd": {
+    "width": 700,
+    "height": 1525,
+    "channels": 3,
+    "bitsPerChannel": 8,
+    "colorMode": 3
+  },
+  "options": {
+    "includeImageData": false,
+    "origin": "center"
+  },
+  "layers": [
+    {
+      "id": "CoinDungeon_BG_GameScene",
+      "kind": "pixel",
+      "name": "CoinDungeon_BG_GameScene",
+      "path": "CoinDungeon_BG_GameScene",
+      "parentPath": null,
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 0,
+        "top": -99,
+        "width": 700,
+        "height": 1725,
+        "right": 700,
+        "bottom": 1626
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "size": {
+          "width": 700,
+          "height": 1725
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "BtnRefresh",
+      "kind": "group",
+      "name": "BtnRefresh",
+      "path": "BtnRefresh",
+      "parentPath": null,
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 592,
+        "top": 876,
+        "width": 96,
+        "height": 93,
+        "right": 688,
+        "bottom": 969
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": 290,
+          "y": -160,
+          "z": 0
+        },
+        "size": {
+          "width": 96,
+          "height": 93
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "BtnRefresh_title_addi",
+      "kind": "pixel",
+      "name": "title_addi",
+      "path": "BtnRefresh/title_addi",
+      "parentPath": "BtnRefresh",
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 594,
+        "top": 876,
+        "width": 92,
+        "height": 93,
+        "right": 686,
+        "bottom": 969
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": 290,
+          "y": -160,
+          "z": 0
+        },
+        "size": {
+          "width": 92,
+          "height": 93
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "BtnRefresh_刷新按钮",
+      "kind": "text",
+      "name": "刷新按钮",
+      "path": "BtnRefresh/刷新按钮",
+      "parentPath": "BtnRefresh",
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 592,
+        "top": 947,
+        "width": 96,
+        "height": 22,
+        "right": 688,
+        "bottom": 969
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": 290,
+          "y": -195.5,
+          "z": 0
+        },
+        "size": {
+          "width": 96,
+          "height": 22
+        }
+      },
+      "text": {
+        "content": "刷新按钮",
+        "font": {
+          "size": 24.003
+        },
+        "color": {
+          "r": 43,
+          "g": 84,
+          "b": 94,
+          "a": 255
+        },
+        "fillColorRaw": {
+          "r": 43.12815,
+          "g": 83.8287,
+          "b": 94.00065000000001
+        },
+        "raw": {
+          "style": {
+            "font": {
+              "name": "AdobeInvisFont",
+              "script": 0,
+              "type": 0,
+              "synthetic": 0
+            },
+            "fontSize": 24.003,
+            "kerning": 0,
+            "fillColor": {
+              "r": 43.12815,
+              "g": 83.8287,
+              "b": 94.00065000000001
+            }
+          },
+          "styleRuns": [
+            {
+              "length": 1,
+              "style": {
+                "autoKerning": false
+              }
+            },
+            {
+              "length": 3,
+              "style": {
+                "autoKerning": true
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "justification": "center",
+            "firstLineIndent": 0,
+            "startIndent": 0,
+            "endIndent": 0,
+            "spaceBefore": 0,
+            "spaceAfter": 0,
+            "autoHyphenate": false,
+            "hyphenatedWordSize": 6,
+            "preHyphen": 2,
+            "postHyphen": 2,
+            "consecutiveHyphens": 8,
+            "zone": 36,
+            "wordSpacing": [
+              0.8,
+              1,
+              1.33
+            ],
+            "letterSpacing": [
+              0,
+              0,
+              0
+            ],
+            "glyphSpacing": [
+              1,
+              1,
+              1
+            ],
+            "autoLeading": 1.75,
+            "leadingType": 1,
+            "hanging": false,
+            "burasagari": false,
+            "kinsokuOrder": 0,
+            "everyLineComposer": false
+          },
+          "warp": {
+            "style": "none",
+            "value": 0,
+            "perspective": 0,
+            "perspectiveOther": 0,
+            "rotate": "horizontal"
+          },
+          "antiAlias": "sharp"
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "TitleGrp",
+      "kind": "group",
+      "name": "TitleGrp",
+      "path": "TitleGrp",
+      "parentPath": null,
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 92,
+        "top": 341,
+        "width": 517,
+        "height": 72,
+        "right": 609,
+        "bottom": 413
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": 0.5,
+          "y": 385.5,
+          "z": 0
+        },
+        "size": {
+          "width": 517,
+          "height": 72
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "TitleGrp_jzmc_titledi",
+      "kind": "pixel",
+      "name": "jzmc_titledi",
+      "path": "TitleGrp/jzmc_titledi",
+      "parentPath": "TitleGrp",
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 92,
+        "top": 341,
+        "width": 517,
+        "height": 72,
+        "right": 609,
+        "bottom": 413
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": 0.5,
+          "y": 385.5,
+          "z": 0
+        },
+        "size": {
+          "width": 517,
+          "height": 72
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    },
+    {
+      "id": "TitleGrp_金猪玩法",
+      "kind": "text",
+      "name": "金猪玩法",
+      "path": "TitleGrp/金猪玩法",
+      "parentPath": "TitleGrp",
+      "visible": true,
+      "opacity": 1,
+      "psd": {
+        "left": 267,
+        "top": 358,
+        "width": 156,
+        "height": 38,
+        "right": 423,
+        "bottom": 396
+      },
+      "cocos": {
+        "origin": "center",
+        "position": {
+          "x": -5,
+          "y": 385.5,
+          "z": 0
+        },
+        "size": {
+          "width": 156,
+          "height": 38
+        }
+      },
+      "text": {
+        "content": "金猪玩法",
+        "font": {
+          "size": 40.005
+        },
+        "color": {
+          "r": 202,
+          "g": 214,
+          "b": 176,
+          "a": 255
+        },
+        "fillColorRaw": {
+          "r": 202.00844999999998,
+          "g": 214.00109999999998,
+          "b": 176.23815000000002
+        },
+        "raw": {
+          "style": {
+            "font": {
+              "name": "AdobeInvisFont",
+              "script": 0,
+              "type": 0,
+              "synthetic": 0
+            },
+            "fontSize": 40.005,
+            "kerning": 0,
+            "fillColor": {
+              "r": 202.00844999999998,
+              "g": 214.00109999999998,
+              "b": 176.23815000000002
+            }
+          },
+          "styleRuns": [
+            {
+              "length": 1,
+              "style": {
+                "autoKerning": false
+              }
+            },
+            {
+              "length": 3,
+              "style": {
+                "autoKerning": true
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "justification": "center",
+            "firstLineIndent": 0,
+            "startIndent": 0,
+            "endIndent": 0,
+            "spaceBefore": 0,
+            "spaceAfter": 0,
+            "autoHyphenate": false,
+            "hyphenatedWordSize": 6,
+            "preHyphen": 2,
+            "postHyphen": 2,
+            "consecutiveHyphens": 8,
+            "zone": 36,
+            "wordSpacing": [
+              0.8,
+              1,
+              1.33
+            ],
+            "letterSpacing": [
+              0,
+              0,
+              0
+            ],
+            "glyphSpacing": [
+              1,
+              1,
+              1
+            ],
+            "autoLeading": 1.75,
+            "leadingType": 1,
+            "hanging": false,
+            "burasagari": false,
+            "kinsokuOrder": 0,
+            "everyLineComposer": false
+          },
+          "warp": {
+            "style": "none",
+            "value": 0,
+            "perspective": 0,
+            "perspectiveOther": 0,
+            "rotate": "horizontal"
+          },
+          "antiAlias": "sharp"
+        }
+      },
+      "flags": {
+        "hasImageData": false
+      }
+    }
+  ],
+  "warnings": [
+    "图层 \"CoinDungeon_BG_GameScene\" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。",
+    "图层 \"BtnRefresh/title_addi\" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。",
+    "图层 \"TitleGrp/jzmc_titledi\" 被归类为像素层，但当前未包含 imageData（默认 skipLayerImageData=true）。如需导出切图，请加 --include-image-data 重新解析。"
+  ]
+}

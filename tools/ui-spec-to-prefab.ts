@@ -4,9 +4,10 @@
  * 依赖：Cocos Creator 已打开本项目，MCP 已启动（默认 http://127.0.0.1:8585/mcp）。
  */
 
-import { readFile, readdir } from 'fs/promises';
+import { readFile, readdir, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const MCP_BASE_URL = process.env.COCOS_MCP_URL ?? 'http://127.0.0.1:8585/mcp';
 
@@ -30,6 +31,7 @@ type UISpecLayer = {
         content: string;
         font?: { name?: string; size?: number };
         color?: { r: number; g: number; b: number; a: number };
+        raw?: { paragraphStyle?: { justification?: string } };
     };
 };
 
@@ -40,6 +42,95 @@ type UISpec = {
     layers: UISpecLayer[];
     warnings: string[];
 };
+
+type PrefabObject = Record<string, any>;
+
+function dbPathToFsPath(dbPath: string): string {
+    if (!dbPath.startsWith('db://assets/')) {
+        throw new Error(`仅支持 db://assets 路径，收到: ${dbPath}`);
+    }
+    const rel = dbPath.replace(/^db:\/\/assets\//, '').replaceAll('/', path.sep);
+    // 在 ESM 环境下没有 __dirname，用 import.meta.url 计算当前文件目录
+    const thisDir = path.dirname(fileURLToPath(import.meta.url));
+    return path.resolve(thisDir, '..', 'assets', rel);
+}
+
+async function postProcessPrefabLabels(prefabDbPath: string, spec: UISpec): Promise<void> {
+    const fsPath = dbPathToFsPath(prefabDbPath);
+    const txt = await readFile(fsPath, 'utf8');
+    const arr = JSON.parse(txt) as PrefabObject[];
+    if (!Array.isArray(arr)) return;
+
+    // node __id__ -> node name（数组下标即 __id__）
+    const nodeNameById = new Map<number, string>();
+    for (let i = 0; i < arr.length; i++) {
+        const o = arr[i];
+        if (o && o.__type__ === 'cc.Node' && typeof o._name === 'string') nodeNameById.set(i, o._name);
+    }
+
+    // layerPath -> layer（用于计算 local pos）
+    const layerByPath = new Map<string, UISpecLayer>();
+    for (const l of spec.layers) layerByPath.set(l.path, l);
+
+    // nodeName(layer.id) -> desired
+    const desiredByNodeName = new Map<
+        string,
+        { fontSize: number; color: { r: number; g: number; b: number; a: number } }
+    >();
+    for (const layer of spec.layers) {
+        if (layer.kind !== 'text') continue;
+        const rawSize = layer.text?.font?.size;
+        const fontSize = Math.max(8, Math.round(Number.isFinite(rawSize as number) ? (rawSize as number) : 20));
+        const col = layer.text?.color ?? { r: 0, g: 0, b: 0, a: 255 };
+        desiredByNodeName.set(layer.id, { fontSize, color: col });
+    }
+
+    // nodeName(layer.id) -> desired local position（prefab 里需要 _lpos）
+    const desiredPosByNodeName = new Map<string, { x: number; y: number; z: number }>();
+    for (const layer of spec.layers) {
+        if (layer.kind === 'empty') continue;
+        const { x: wx, y: wy, z } = layer.cocos.position;
+        let x = wx;
+        let y = wy;
+        if (layer.parentPath) {
+            const parentLayer = layerByPath.get(layer.parentPath);
+            if (parentLayer) {
+                x = wx - parentLayer.cocos.position.x;
+                y = wy - parentLayer.cocos.position.y;
+            }
+        }
+        desiredPosByNodeName.set(layer.id, { x, y, z: z ?? 0 });
+    }
+
+    let changed = false;
+    for (const o of arr) {
+        // 写回 Node 位置，避免“场景里正确但保存 prefab 后丢失位置”
+        if (o && o.__type__ === 'cc.Node' && typeof o._name === 'string') {
+            const dp = desiredPosByNodeName.get(o._name);
+            if (dp) {
+                o._lpos = { __type__: 'cc.Vec3', x: dp.x, y: dp.y, z: dp.z };
+                changed = true;
+            }
+        }
+
+        if (!o || o.__type__ !== 'cc.Label' || !o.node || typeof o.node.__id__ !== 'number') continue;
+        const nodeName = nodeNameById.get(o.node.__id__);
+        if (!nodeName) continue;
+        const desired = desiredByNodeName.get(nodeName);
+        if (!desired) continue;
+
+        o._fontSize = desired.fontSize;
+        o._actualFontSize = desired.fontSize;
+        o._lineHeight = Math.max(o._lineHeight ?? 0, Math.round(desired.fontSize * 1.2));
+        o._color = { __type__: 'cc.Color', r: desired.color.r, g: desired.color.g, b: desired.color.b, a: desired.color.a };
+        changed = true;
+    }
+
+    if (changed) {
+        await writeFile(fsPath, JSON.stringify(arr, null, 2), 'utf8');
+        console.log(`已后处理写回 Node 位置 + Label 字体/颜色: ${prefabDbPath}`);
+    }
+}
 
 /** 与 ui-spec 同目录、同主文件名：如 testView.rules.json，由脚本自动加载（也可用 --rules 指定） */
 type ComponentRulesFile = {
@@ -109,6 +200,35 @@ async function callMCP(toolName: string, args: Record<string, unknown>): Promise
     const json = await res.json();
     if (json.error) throw new Error(`MCP: ${json.error.message || JSON.stringify(json.error)}`);
     return json;
+}
+
+async function tryReimportAsset(savePathDb: string): Promise<void> {
+    // 不同版本插件的 AssetDB 工具命名/参数可能不同，这里做 best-effort 多路尝试。
+    const attempts: Array<{ tool: string; args: Record<string, unknown> }> = [
+        // 新版分类工具（README 提到）
+        { tool: 'asset_operations', args: { action: 'reimport', url: savePathDb } },
+        { tool: 'asset_operations', args: { action: 'reimport', path: savePathDb } },
+        { tool: 'asset_system', args: { action: 'refresh', url: savePathDb } },
+        { tool: 'asset_system', args: { action: 'refresh' } },
+
+        // 兼容旧工具名（如果存在）
+        { tool: 'asset_reimport_asset', args: { url: savePathDb } },
+        { tool: 'asset_refresh_assets', args: {} }
+    ];
+
+    for (const a of attempts) {
+        try {
+            const r = await callMCP(a.tool, a.args);
+            const p = parseToolPayload(r);
+            if (p?.success === true) {
+                console.log(`已触发资源重导入/刷新：${a.tool} ${JSON.stringify(a.args)}`);
+                return;
+            }
+        } catch {
+            // ignore
+        }
+    }
+    console.warn(`⚠ 未能通过 MCP 自动触发 Reimport/Refresh（不影响生成）。如遇到 prefab 打开是旧数据，请手动右键 Reimport：${savePathDb}`);
 }
 
 function parseToolPayload(result: any): any {
@@ -181,24 +301,39 @@ async function loadComponentRules(
     specAbs: string,
     rulesArg: string | undefined
 ): Promise<ComponentRulesFile | null> {
-    const candidates: string[] = [];
-    if (rulesArg) candidates.push(path.resolve(rulesArg));
+    const candidates: Array<{ path: string; label: string }> = [];
+
+    // 0) 若命令行显式指定 --rules，则仅使用该文件（完全接管，不再自动合并）
+    if (rulesArg) {
+        candidates.push({ path: path.resolve(rulesArg), label: 'cli' });
+    } else {
+        // 1) 全局 base rules（默认存在则启用）
+        const baseRules = path.resolve(path.dirname(specAbs), 'base.rules.json');
+        if (existsSync(baseRules)) candidates.push({ path: baseRules, label: 'base' });
+    }
     const base = path.basename(specAbs, path.extname(specAbs));
     const auto = path.join(path.dirname(specAbs), `${base}.rules.json`);
-    if (!rulesArg && existsSync(auto)) candidates.push(auto);
+    if (!rulesArg && existsSync(auto)) candidates.push({ path: auto, label: 'page' });
 
-    for (const p of candidates) {
+    const merged: ComponentRulesFile = { version: 1, layerNameRules: [] };
+    let loadedAny = false;
+
+    for (const c of candidates) {
         try {
-            const raw = await readFile(p, 'utf8');
+            const raw = await readFile(c.path, 'utf8');
             const data = JSON.parse(raw) as ComponentRulesFile;
             if (data.version !== 1) continue;
-            console.log(`\n已加载组件规则: ${p}`);
-            return data;
+            if (data.layerNameRules?.length) {
+                merged.layerNameRules!.push(...data.layerNameRules);
+            }
+            loadedAny = true;
+            console.log(`\n已加载组件规则(${c.label}): ${c.path}`);
         } catch {
             /* try next */
         }
     }
-    return null;
+    if (!loadedAny || !merged.layerNameRules?.length) return null;
+    return merged;
 }
 
 async function applyLayerNameRules(
@@ -255,6 +390,16 @@ async function sleep(ms: number) {
     await new Promise(r => setTimeout(r, ms));
 }
 
+function mapLabelHorizontalAlign(justification?: string): number | undefined {
+    if (!justification) return undefined;
+    const j = justification.toLowerCase();
+    // cc.Label.HorizontalAlign: LEFT=0, CENTER=1, RIGHT=2
+    if (j === 'left' || j === 'justify-left') return 0;
+    if (j === 'center' || j === 'justify-center') return 1;
+    if (j === 'right' || j === 'justify-right') return 2;
+    return undefined;
+}
+
 async function main() {
     const { specPath, prefab: prefabArg, textureDir: textureArg, rules: rulesArg } = parseArgs(process.argv);
     const specAbs = path.resolve(specPath);
@@ -284,6 +429,8 @@ async function main() {
 
     const rootId = `${baseName}Root`;
     const uuidById = new Map<string, string>();
+    const layerByPath = new Map<string, UISpecLayer>();
+    for (const l of spec.layers) layerByPath.set(l.path, l);
 
     // 同深度时保留 JSON 中的顺序（与 PSD 遍历顺序一致），避免按名字排序打乱叠放顺序
     const sorted = spec.layers
@@ -356,7 +503,18 @@ async function main() {
 
         await sleep(40);
 
-        const { x, y, z } = layer.cocos.position;
+        // spec 中的 cocos.position 是“以画布为参考的绝对坐标”（底左点）。
+        // 但节点会按 parentPath 挂到父节点下，因此这里必须转成 local 坐标：childWorld - parentWorld
+        const { x: wx, y: wy, z } = layer.cocos.position;
+        let x = wx;
+        let y = wy;
+        if (layer.parentPath) {
+            const parentLayer = layerByPath.get(layer.parentPath);
+            if (parentLayer) {
+                x = wx - parentLayer.cocos.position.x;
+                y = wy - parentLayer.cocos.position.y;
+            }
+        }
         const tr = parseToolPayload(
             await callMCP('node_set_node_transform', {
                 uuid: nodeUuid,
@@ -364,6 +522,20 @@ async function main() {
             })
         );
         assertSuccess(tr, `node_set_node_transform(${id})`);
+
+        // 某些情况下 node_set_node_transform 只改运行时，不会落到 prefab 序列化（_lpos）里。
+        // 为避免“场景里看着对，但另存 prefab 又错”的问题，这里同步写入序列化字段。
+        const lposPayload = parseToolPayload(
+            await callMCP('node_set_node_property', {
+                uuid: nodeUuid,
+                property: '_lpos',
+                value: { __type__: 'cc.Vec3', x, y, z: z ?? 0 }
+            })
+        );
+        if (!lposPayload?.success) {
+            // 不要 hard fail：不同版本 MCP 可能不允许写私有字段
+            console.warn(`    ⚠ 写入 _lpos 失败（将仅依赖运行时 transform）: ${JSON.stringify(lposPayload)}`);
+        }
 
         let w = Math.max(1, Math.round(layer.cocos.size.width));
         let h = Math.max(1, Math.round(layer.cocos.size.height));
@@ -433,14 +605,32 @@ async function main() {
             assertSuccess(addLb, `add_component(cc.Label, ${id})`);
 
             const text = layer.text?.content ?? '';
-            const fontSize = Math.max(8, Math.round(layer.text?.font?.size ?? 20));
+            const rawSize = layer.text?.font?.size;
+            const fontSize = Math.max(8, Math.round(Number.isFinite(rawSize as number) ? (rawSize as number) : 20));
             const col = layer.text?.color ?? { r: 0, g: 0, b: 0, a: 255 };
 
-            for (const [prop, ptype, val] of [
+            // 兼容性处理：
+            // - 有些版本/实现里，直接设运行时属性（fontSize/color）在保存 Prefab 时不会落盘到序列化字段
+            // - 因此这里同时尝试设置运行时字段与序列化字段（带下划线），以确保最终 prefab 内容正确
+            const labelProps: Array<[string, string, string | number | Record<string, number>]> = [
                 ['string', 'string', text],
+                ['_string', 'string', text],
+
                 ['fontSize', 'number', fontSize],
-                ['color', 'color', col]
-            ] as const) {
+                ['_fontSize', 'number', fontSize],
+                ['_actualFontSize', 'number', fontSize],
+
+                ['color', 'color', col],
+                ['_color', 'color', col]
+            ];
+
+            const hAlign = mapLabelHorizontalAlign(layer.text?.raw?.paragraphStyle?.justification);
+            if (hAlign !== undefined) {
+                labelProps.push(['horizontalAlign', 'number', hAlign]);
+                labelProps.push(['_horizontalAlign', 'number', hAlign]);
+            }
+
+            for (const [prop, ptype, val] of labelProps) {
                 const p = parseToolPayload(
                     await callMCP('component_set_component_property', {
                         nodeUuid,
@@ -451,6 +641,18 @@ async function main() {
                     })
                 );
                 assertSuccess(p, `Label ${prop}(${id})`);
+            }
+
+            // 同步设置节点颜色（有些情况下编辑器“另存 prefab”会以 Node.color 为准回写）
+            const nodeColorPayload = parseToolPayload(
+                await callMCP('node_set_node_property', {
+                    uuid: nodeUuid,
+                    property: 'color',
+                    value: { r: col.r, g: col.g, b: col.b, a: col.a }
+                })
+            );
+            if (!nodeColorPayload?.success) {
+                console.warn(`    ⚠ 设置 Node.color 失败（可忽略）：${JSON.stringify(nodeColorPayload)}`);
             }
 
             await applyLayerNameRules(layer, nodeUuid, componentRules);
@@ -472,6 +674,20 @@ async function main() {
         })
     );
     assertSuccess(prefabPayload, 'prefab_create_prefab');
+
+    // 二次修正：确保 Label 的字体大小/颜色最终落盘（部分版本下 MCP 修改不会被 prefab 序列化捕获）
+    try {
+        await postProcessPrefabLabels(prefabPath, spec);
+    } catch (e) {
+        console.warn(`⚠ Prefab 后处理失败（可忽略，不影响生成）：${(e as Error)?.message ?? String(e)}`);
+    }
+
+    // 触发资源库刷新：避免“scene 里对，但点开 prefab 还是旧数据，需要手动 Reimport”
+    try {
+        await tryReimportAsset(prefabPath);
+    } catch (e) {
+        console.warn(`⚠ 自动 Reimport/Refresh 失败（可忽略）：${(e as Error)?.message ?? String(e)}`);
+    }
 
     console.log('\n✅ 完成。若场景里已有同名节点，请先手动清理或改名后再试。');
 }
