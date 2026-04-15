@@ -2,6 +2,8 @@
 
 本文档整理自项目内 **PSD 解析 → 中间 JSON → MCP 生成 Prefab** 的实践，供美术与前端对齐使用。
 
+想先看一篇“劝架式”宣传文（顺便理解我们到底在解决什么）：**`docs/你们不要再打了.md`**。
+
 **给他人安装与跑脚本时**，请另阅：**`PSD到Prefab-使用说明与交付清单.md`**（环境、须同步的目录、命令清单）。
 
 ---
@@ -50,7 +52,7 @@
 ### 1. 环境准备
 
 1. **Cocos Creator** 打开本项目（版本与 `CLAUDE.md` 一致，如 3.8.x）。
-2. 安装并启用扩展 **`cocos-mcp-server`**（位于 `extensions/cocos-mcp-server/`）。
+2. 安装并启用扩展 **`cocos-mcp-server`**（位于 `extensions/cocos-mcp-server/`；GitHub：`https://github.com/DaxianLee/cocos-mcp-server`）。
 3. 菜单 **扩展 → Cocos MCP Server**，配置端口（示例 **8585**），点击 **启动服务**；可选开启 **自动启动**。
 4. **Cursor（或 VS Code）** 中配置 MCP，指向 HTTP 地址，例如：
 
